@@ -57,12 +57,52 @@ return <przedzial>{min($a/book/@year) || ' - ' || max($a/book/@year)}</przedzial
 17.
 for $a in doc("db/bib/bib.xml")//bib
 return <roznica>{max($a/book/price) - min($a/book/price)}</roznica>
-:)
+18
 <najtansze>{
-for $a in doc("db/bib/bib.xml")//bib
-return <roznica>{max($a/book/price) - min($a/book/price)}</roznica>
+for $a in doc("db/bib/bib.xml")//bib/book
+where $a/price = min(//bib/book/price)
+return <najtansza>
+{$a/title}
+{$a/author}
+</najtansza>
 
 }</najtansze>
+19
+for $a in distinct-values(doc("db/bib/bib.xml")//bib/book/author/last)
+let $b := //bib/book[author/last = $a]
+return <author><last>{$a}</last> {$b/title}</author>
+20
+<wynik> {
+for $a in collection("db/shakespeare")/PLAY/TITLE
+return  $a
+}</wynik>
+21
+for $a in collection("db/shakespeare")/PLAY/TITLE
+where some $b in $a/..//LINE satisfies contains($b, 'or not to be')
+return  $a
+:)
+<wynik> {
+for $a in collection("db/shakespeare")/PLAY
+return <sztuka tytul="{data($a/TITLE)}">
+<postaci>{count($a//PERSONA)}</postaci>
+<aktow>{count($a/ACT)}</aktow>
+<scen>{count($a/ACT/SCENE)}</scen>
+</sztuka>
+
+}</wynik>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
